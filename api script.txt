@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Function to extract API endpoints from a website
+get_api_endpoints() {
+    # Replace 'https://hub.dockerhub.com/api' 
+    
+    # Use curl to retrieve the webpage content
+    page_content=$(curl -s "$api_url")
+
+    # Extract API endpoints using grep
+    api_calls=$(echo "$page_content" | grep -o '"endpoint": "[^"]*' | awk -F'"' '{print $4}')
+
+    # Display available API calls
+    echo "Available API calls:"
+    echo "$api_calls"
+}
+# Call the function
+get_api_endpoints
