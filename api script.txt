@@ -1,18 +1,23 @@
 #!/bin/bash
 
-# Function to extract API endpoints from a website
-get_api_endpoints() {
-    # Replace 'https://hub.dockerhub.com/api' 
-    
-    # Use curl to retrieve the webpage content
-    page_content=$(curl -s "$api_url")
+#URL: the website with API call information
+URL="https://azure.microsoft.com/en-us/get-started/azure-portal"
+#URL=" You can access any website here URL"
 
-    # Extract API endpoints using grep
-    api_calls=$(echo "$page_content" | grep -o '"endpoint": "[^"]*' | awk -F'"' '{print $4}')
+# Use curl to fetch the webpage content
+WEB_CONTENT=$(curl -s "$URL")
 
-    # Display available API calls
-    echo "Available API calls:"
-    echo "$api_calls"
-}
-# Call the function
-get_api_endpoints
+# Check if the request was successful
+if [ $? -eq 0 ]; then
+    # Extract API calls using grep and awk
+    API_CALLS=$(echo "$WEB_CONTENT" | grep -o '"api_call": *"[^"]*' | awk -F'"' '{print $4}')
+
+    if [ -n "$API_CALLS" ]; then
+        echo "Available API calls:"
+        echo "$API_CALLS"
+    else
+        echo "No API calls found on the website."
+    fi
+else
+    echo "Failed to retrieve information from $URL"
+fi
